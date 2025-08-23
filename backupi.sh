@@ -39,3 +39,17 @@ while IFS= read -r LINE; do
     fi
 
 done < "$DB_LIST"
+
+
+
+if [ "$FTP_ENABLE" = true ]; then
+    echo "Uploading backups to FTP server..."
+    lftp -u "$FTP_USER" & "$FTP_PASS" & "$FTP_HOST" & <<EOF
+cd $FTP_DIR
+mirror "$BACKUP_DIR/$DATE" .
+bye
+EOF
+    echo "pload completed.."
+fi
+
+echo "Backup process finished."
